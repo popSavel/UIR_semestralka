@@ -1,6 +1,4 @@
-import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,25 +8,16 @@ public class Main {
 
     public static void main(String[] args) {
         String [] lines = readFile(args[0]);
-        Sentence [] sentences = new Sentence[lines.length];
-        for(int i = 0; i < sentences.length; i++){
-            sentences[i] = new Sentence(lines[i]);
+        Sentence[] trainData = new Sentence[lines.length];
+        for(int i = 0; i < trainData.length; i++){
+            trainData[i] = new Sentence(lines[i]);
         }
 
-        BagOfWords bow = new BagOfWords(sentences);
+        BagOfWords bow = new BagOfWords(trainData);
+        TF_IDF tf_idf = new TF_IDF(trainData, bow.vocabulary);
 
-        for(int i = 0; i < bow.vocabulary.length; i++){
-            System.out.println(bow.vocabulary[i]);
-        }
+        N_Bayes bayes = new N_Bayes(trainData);
 
-        for(int i = 0; i < 10; i++){
-            Sentence curr = sentences[i];
-            System.out.print(curr.type + ": ");
-            for(int j = 0; j < curr.bowVector.length; j++){
-                System.out.print(curr.bowVector[j] + ", ");
-            }
-            System.out.println();
-        }
     }
 
     private  static String[] readFile(String fileName) {

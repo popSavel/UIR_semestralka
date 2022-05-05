@@ -2,13 +2,12 @@ import java.util.ArrayList;
 
 public class BagOfWords {
 
-    Sentence [] sentences;
+    Sentence[] sentences;
 
     String [] vocabulary;
-    public BagOfWords(Sentence [] sentences) {
-        this.sentences = sentences;
+    public BagOfWords(Sentence[] trainData) {
+        this.sentences = trainData;
         this.vocabulary = makeVocabulary();
-        System.out.println(vocabulary.length);
         for(int i = 0; i < this.sentences.length; i++){
             this.sentences[i].bowVector = makeVector(this.sentences[i]);
         }

@@ -8,6 +8,8 @@ public class Sentence {
 
     int [] bowVector;
 
+    double [] tf_idf;
+
     public Sentence(String line) {
         String [] sentence = line.split(" ");
         type = sentence[0];
@@ -63,5 +65,14 @@ public class Sentence {
         }
 
         return word;
+    }
+
+    public boolean contains(String currWord) {
+        for(int i =0; i < this.words.length; i++){
+            if(this.words[i].equals(currWord)){
+                return true;
+            }
+        }
+        return false;
     }
 }
