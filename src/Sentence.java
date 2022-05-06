@@ -6,9 +6,9 @@ public class Sentence {
 
     String type;
 
-    int [] bowVector;
+    String classifiedAs;
 
-    double [] tf_idf;
+    double [] vector;
 
     public Sentence(String line) {
         String [] sentence = line.split(" ");
@@ -28,18 +28,21 @@ public class Sentence {
         ArrayList<String> result = new ArrayList<String>();
         for(int i = 1; i < sentence.length; i++){
             String word = sentence[i];
-            if(word.charAt((word.length() - 1)) == '?'){
-                char newWord = word.charAt(word.length() - 1);
+            if(word.length()>0) {
+                if (word.charAt((word.length() - 1)) == '?') {
+                    char newWord = word.charAt(word.length() - 1);
 
 
-
-                word = word.substring(0, word.length() - 1);
-                word = strip(word);
-                result.add(word);
-                result.add(Character.toString(newWord));
-            }else{
-                word = strip(word);
-                result.add(word);
+                    word = word.substring(0, word.length() - 1);
+                    word = strip(word);
+                    result.add(word);
+                    result.add(Character.toString(newWord));
+                } else {
+                    if(isValid(word)) {
+                        word = strip(word);
+                        result.add(word);
+                    }
+                }
             }
 
         }
@@ -74,5 +77,18 @@ public class Sentence {
             }
         }
         return false;
+    }
+
+    public boolean isValid(String word){
+        if(word.length() > 0 && (!word.equals("."))
+                            && (!word.equals("-"))
+                            && (!word.equals("?"))
+                            && (!word.equals("!"))
+                            && (!word.equals(":"))
+                            && (!word.equals(","))){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

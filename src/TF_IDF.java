@@ -1,4 +1,6 @@
-public class TF_IDF {
+import java.util.ArrayList;
+
+public class TF_IDF{
 
     Sentence [] sentences;
 
@@ -37,7 +39,7 @@ public class TF_IDF {
                 Double tf = occurenses/length;
                 tf_idf[j] = tf * this.idf[j];
             }
-            curr.tf_idf = tf_idf;
+            curr.vector = tf_idf;
         }
     }
 
