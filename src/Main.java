@@ -7,10 +7,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        String [] linesTrain = readFile(args[0]);
-        String [] linesTest = readFile(args[1]);
-        Sentence[] trainData = new Sentence[linesTrain.length];
-        Sentence[] testData = new Sentence[linesTest.length];
+        String [] classes = readFile(args[0]);
+        String [] linesTrain = readFile(args[1]);
+        String [] linesTest = readFile(args[2]);
+        String featureMethod = args[3];
+        String classificationMethod = args[4];
+        Sentence [] trainData = new Sentence[linesTrain.length];
+        Sentence [] testData = new Sentence[linesTest.length];
 
         for(int i = 0; i < trainData.length; i++){
             trainData[i] = new Sentence(linesTrain[i]);
@@ -22,16 +25,61 @@ public class Main {
 
         String [] vocabulary = makeVocabulary(trainData);
 
-        BagOfWords bow = new BagOfWords(trainData, vocabulary);
-        TF_IDF tf_idf = new TF_IDF(trainData, vocabulary);
-        TF_IDF tf_idf1 = new TF_IDF(testData, vocabulary);
+        ClassificationClass [] classificationClasses = createClasses(classes, trainData.length);
 
+        feature(featureMethod, trainData, vocabulary);
 
-        //N_Bayes bayes = new N_Bayes(trainData, testData, vocabulary);
+        Classificator classificator = null;
 
-        K_NN k_nn = new K_NN(trainData, testData, vocabulary);
+        switch (classificationMethod){
+            case "bayes":
+                classificator = new N_Bayes(trainData, testData, vocabulary);
+                break;
+            case "k_nn":
+                classificator = new K_NN(trainData, testData, vocabulary);
+                feature(featureMethod, testData, vocabulary);
+                break;
+            default:
+                System.out.println("Error: Invalid classification method parameter given, process stopped manually!!!");
+                System.exit(0);
+            }
+
+        classificator.classify();
         printResults(testData);
+    }
 
+
+
+
+
+    private static void feature(String featureMethod, Sentence[] data, String[] vocabulary) {
+        Feature feature = null;
+
+        Classificator classificator = null;
+
+        switch (featureMethod){
+            case "tf_idf":
+                feature = new TF_IDF(data, vocabulary);
+                break;
+            case "bow":
+                feature = new BagOfWords(data, vocabulary);
+                break;
+            case "df":
+                feature= new DF(data, vocabulary);
+                break;
+            default:
+                System.out.println("Error: Invalid feature method parameter given, process stopped manually!!!");
+                System.exit(0);
+        }
+        feature.feature();
+    }
+
+    private static ClassificationClass[] createClasses(String[] classes, int length) {
+        ClassificationClass [] result = new ClassificationClass[classes.length];
+        for(int i = 0;  i < result.length; i++){
+            result[i] = new ClassificationClass(classes[i], length);
+        }
+        return result;
     }
 
     private static void printResults(Sentence[] testData) {
@@ -42,7 +90,7 @@ public class Main {
             }
         }
         double result = correct/(double)testData.length;
-        System.out.println("results: " + result*100 );
+        System.out.println("accuracy: " + result*100 );
     }
 
     public static String[] makeVocabulary(Sentence[] data){

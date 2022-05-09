@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class N_Bayes {
+public class N_Bayes implements Classificator{
 
     Sentence [] trainData;
 
@@ -8,22 +8,20 @@ public class N_Bayes {
 
     String [] vocabulary;
 
-    String [] result;
-
     ClassificationClass [] classes;
+
     public N_Bayes(Sentence[] trainData, Sentence[] testData, String[] vocabulary) {
         this.trainData = trainData;
         this.testData = testData;
         this.vocabulary = vocabulary;
-        sortData(this.trainData);
-        train();
-        result = classify(this.testData);
     }
 
-    private String[] classify(Sentence[] testData) {
-        String [] result = new String[testData.length];
+    public String[] classify() {
+        sortData(this.trainData);
+        train();
+        String [] result = new String[this.testData.length];
         for(int i = 0; i < result.length; i++){
-            Sentence curr = testData[i];
+            Sentence curr = this.testData[i];
             double [] probabilities = new double[classes.length];
             for(int j = 0; j < probabilities.length; j++){
                 probabilities[j] = classes[j].countProbability(curr, vocabulary);

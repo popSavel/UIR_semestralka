@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class TF_IDF{
+public class TF_IDF implements Feature{
 
     Sentence [] sentences;
 
@@ -10,8 +10,6 @@ public class TF_IDF{
     public TF_IDF(Sentence[] trainData, String[] vocabulary) {
         this.sentences = trainData;
         this.vocabulary = vocabulary;
-        this.idf = makeIdf();
-        tf();
     }
 
     private double[] makeIdf() {
@@ -51,5 +49,11 @@ public class TF_IDF{
             }
         }
         return result;
+    }
+
+    @Override
+    public void feature() {
+        this.idf = makeIdf();
+        tf();
     }
 }

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class BagOfWords{
+public class BagOfWords implements Feature{
 
     Sentence[] sentences;
 
@@ -8,9 +8,6 @@ public class BagOfWords{
     public BagOfWords(Sentence[] trainData, String[] vocabulary) {
         this.sentences = trainData;
         this.vocabulary = vocabulary;
-        for(int i = 0; i < this.sentences.length; i++){
-            this.sentences[i].vector = makeVector(this.sentences[i]);
-        }
     }
 
     public double[] makeVector(Sentence sentence) {
@@ -30,5 +27,12 @@ public class BagOfWords{
             }
         }
         return result;
+    }
+
+    @Override
+    public void feature() {
+        for(int i = 0; i < this.sentences.length; i++){
+            this.sentences[i].vector = makeVector(this.sentences[i]);
+        }
     }
 }

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class K_NN {
+public class K_NN implements Classificator{
 
     Sentence [] trainData;
 
@@ -8,23 +8,20 @@ public class K_NN {
 
     String [] vocabulary;
 
-    String [] result;
-
     int K = 3;
     public K_NN(Sentence[] trainData, Sentence[] testData, String[] vocabulary) {
         this.trainData = trainData;
         this.testData = testData;
         this.vocabulary = vocabulary;
-        result = classify(this.testData);
     }
 
-    private String[] classify(Sentence[] testData) {
-        String [] result = new String[testData.length];
+    public String[] classify() {
+        String [] result = new String[this.testData.length];
         Sentence [] nearest = new Sentence[this.K];
         for(int i = 0; i < result.length; i++){
-            nearest = findNearest(testData[i]);
+            nearest = findNearest(this.testData[i]);
             result[i] = mostNeighbours(nearest);
-            testData[i].classifiedAs = result[i];
+            this.testData[i].classifiedAs = result[i];
         }
         return result;
     }
