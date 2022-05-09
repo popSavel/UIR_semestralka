@@ -24,10 +24,12 @@ public class Main {
 
         BagOfWords bow = new BagOfWords(trainData, vocabulary);
         TF_IDF tf_idf = new TF_IDF(trainData, vocabulary);
+        TF_IDF tf_idf1 = new TF_IDF(testData, vocabulary);
 
 
-        N_Bayes bayes = new N_Bayes(trainData, testData, vocabulary);
+        //N_Bayes bayes = new N_Bayes(trainData, testData, vocabulary);
 
+        K_NN k_nn = new K_NN(trainData, testData, vocabulary);
         printResults(testData);
 
     }

@@ -17,7 +17,7 @@ public class N_Bayes {
         this.vocabulary = vocabulary;
         sortData(this.trainData);
         train();
-        result = classify(this.testData);;
+        result = classify(this.testData);
     }
 
     private String[] classify(Sentence[] testData) {
