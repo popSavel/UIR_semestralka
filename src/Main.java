@@ -7,6 +7,10 @@ public class Main {
 
 
     public static void main(String[] args) {
+        if(args.length != 6 && args.length != 1){
+            System.out.println("Error: Number of arguments must be 6 for creating module!!! program stopped manually");
+            System.exit(0);
+        }
         String [] classes = readFile(args[0]);
         String [] linesTrain = readFile(args[1]);
         String [] linesTest = readFile(args[2]);
