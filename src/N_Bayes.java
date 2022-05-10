@@ -32,6 +32,15 @@ public class N_Bayes implements Classificator{
         return result;
     }
 
+    public String classifyInput(Sentence input) {
+        double [] probabilities = new double[classes.length];
+        for(int j = 0; j < probabilities.length; j++){
+            probabilities[j] = classes[j].countProbability(input, vocabulary);
+        }
+        int largest = largest(probabilities);
+        return classes[largest].name;
+    }
+
     private int largest(double[] probabilities) {
         int result = 0;
         double largest = 0;

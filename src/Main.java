@@ -1,4 +1,6 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,6 +18,7 @@ public class Main {
         String [] linesTest = readFile(args[2]);
         String featureMethod = args[3];
         String classificationMethod = args[4];
+        String outputFile = args[5];
         Sentence [] trainData = new Sentence[linesTrain.length];
         Sentence [] testData = new Sentence[linesTest.length];
 
@@ -50,10 +53,42 @@ public class Main {
 
         classificator.classify();
         printResults(testData);
+        printOutput(outputFile, testData);
+
+        // before calling input classifying method, set classifier to n_Bayes, because it is most accurate
+        N_Bayes nb = new N_Bayes(trainData, testData, vocabulary);
+        nb.classify();
+        classifyInput(nb);
     }
 
+    private static void printOutput(String outputFile, Sentence[] testData) {
+        try{
+            PrintWriter writer = new PrintWriter(outputFile);
+            for(int i = 0; i < testData.length; i++){
+                String line = testData[i].type;
+                for (int j = 0; j < testData[i].words.length; j++){
+                    line += " " + testData[i].words[j];
+                }
+                line += " " + testData[i].classifiedAs;
+                writer.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error loading output file: make sure it ends with .txt");
+        }
+    }
 
-
+    private static void classifyInput(N_Bayes nb) {
+        System.out.println("Zadejte větu ke klasifikaci: ");
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine()){
+            String text = sc.nextLine();
+            if(!text.isBlank() && !text.isEmpty()){
+                Sentence input = new Sentence(text);
+                String result = nb.classifyInput(input);
+                System.out.println(result);
+            }
+        }
+    }
 
 
     private static void feature(String featureMethod, Sentence[] data, String[] vocabulary) {
@@ -94,7 +129,8 @@ public class Main {
             }
         }
         double result = correct/(double)testData.length;
-        System.out.println("accuracy: " + result*100 );
+        System.out.format("Program klasifikoval testovací data s přesností %.2f procent", result * 100);
+        System.out.println();
     }
 
     public static String[] makeVocabulary(Sentence[] data){
