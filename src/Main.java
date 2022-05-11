@@ -93,6 +93,11 @@ public class Main {
                 String text = textArea.getText();
                 text.strip();
                 Sentence toClassify = new Sentence(text);
+                if(classificationMethod.equals("k_nn")){
+                    Sentence [] guiText = new Sentence[1];
+                    guiText[0] = toClassify;
+                    feature(featureType, guiText, vocabulary);
+                }
                 String result = classificator.classifyInput(toClassify);
                 resultField.setText(result);
                 gui.repaint();

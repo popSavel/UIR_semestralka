@@ -28,7 +28,8 @@ public class K_NN implements Classificator{
 
     @Override
     public String classifyInput(Sentence input) {
-        return null;
+        Sentence [] nearest = findNearest(input);
+        return mostNeighbours(nearest);
     }
 
     private String mostNeighbours(Sentence[] nearest) {
