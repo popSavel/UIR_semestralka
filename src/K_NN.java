@@ -26,6 +26,11 @@ public class K_NN implements Classificator{
         return result;
     }
 
+    @Override
+    public String classifyInput(Sentence input) {
+        return null;
+    }
+
     private String mostNeighbours(Sentence[] nearest) {
         ArrayList<ClassificationClass> classes = new ArrayList<ClassificationClass>();
         for(int i = 0; i < nearest.length; i++){

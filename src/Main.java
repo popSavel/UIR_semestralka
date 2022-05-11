@@ -1,3 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,15 +14,129 @@ public class Main {
 
     public static void main(String[] args) {
         if(args.length != 6 && args.length != 1){
-            System.out.println("Error: Number of arguments must be 6 for creating module!!! program stopped manually");
+            System.out.println("Error: Number of arguments must be 6 for creating module, or 1 for running existing module!!! program stopped manually");
             System.exit(0);
+        }else{
+            if(args.length == 6){
+                String [] classes = readFile(args[0]);
+                String [] linesTrain = readFile(args[1]);
+                String [] linesTest = readFile(args[2]);
+                String featureMethod = args[3];
+                String classificationMethod = args[4];
+                String outputFile = args[5];
+                createModule(classes, linesTrain, linesTest, featureMethod, classificationMethod, outputFile);
+            }else{
+                String modul = args[0];
+                runModule(modul);
+            }
         }
-        String [] classes = readFile(args[0]);
-        String [] linesTrain = readFile(args[1]);
-        String [] linesTest = readFile(args[2]);
-        String featureMethod = args[3];
-        String classificationMethod = args[4];
-        String outputFile = args[5];
+    }
+
+    private static void runModule(String modul) {
+        String [] lines = readFile(modul);
+        String featureType = lines[0];
+        String classificationMethod = lines[1];
+
+        int classesLength  = Integer.parseInt(lines[2]);
+
+        String [] classes = new String[classesLength];
+
+        for(int i = 0; i < classesLength; i++){
+            classes[i] = lines[i + 3];
+        }
+
+        Sentence [] data = new Sentence[lines.length - (classesLength + 3)];
+
+        for(int i = 0; i < lines.length - (classesLength + 3); i++){
+            String line = lines[i + (classesLength + 3)];
+            data[i] = new Sentence(line);
+        }
+
+        String [] vocabulary = makeVocabulary(data);
+
+        createClasses(classes, lines.length - (classesLength + 3));
+
+        feature(featureType, data, vocabulary);
+
+        Classificator classificator = createClassificator(classificationMethod, data, vocabulary);
+
+        JFrame gui = new JFrame();
+        gui.setTitle("UIR 2022 - klasifikace dialogových aktů");
+        gui.setSize(800, 200);
+
+        JPanel panel = new JPanel();
+        panel.setSize(new Dimension(800, 200));
+
+        TextField textArea = new TextField( 50);
+
+        Label fMethod = new Label("Příznakový algoritmus: " + featureType);
+        Label cMethod = new Label("Klasifikační algoroitmus: " + classificationMethod);
+
+        Label resultLabel = new Label("Výsledek: ");
+        TextField resultField = new TextField();
+        resultField.setColumns(15);
+
+
+        Button klasifikace = new Button("Klasifikuj");
+        Button delete = new Button("Vymaž text");
+
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.setText("");
+            }
+        });
+
+        klasifikace.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = textArea.getText();
+                text.strip();
+                Sentence toClassify = new Sentence(text);
+                String result = classificator.classifyInput(toClassify);
+                resultField.setText(result);
+                gui.repaint();
+            }
+        });
+
+        JPanel tf = new JPanel();
+        tf.add(new Label("Zadejte text: "));
+        tf.add(textArea);
+
+        JPanel buttons = new JPanel();
+        buttons.add(fMethod);
+        buttons.add(cMethod);
+        buttons.add(delete);
+        buttons.add(klasifikace);
+        buttons.add(resultLabel);
+        buttons.add(resultField);
+
+        panel.setLayout(new BorderLayout());
+        panel.add(tf, BorderLayout.CENTER);
+        panel.add(buttons, BorderLayout.AFTER_LAST_LINE);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
+        gui.add(panel);
+
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui.setLocationRelativeTo(null);
+        gui.setResizable(false);
+
+        gui.setVisible(true);
+    }
+
+    private static Classificator createClassificator(String classificationMethod, Sentence[] data, String[] vocabulary) {
+        Classificator classificator = null;
+        if(classificationMethod.equals("bayes")){
+            classificator = new N_Bayes(data, null ,vocabulary);
+        }else{
+            classificator = new K_NN(data, null, vocabulary);
+        }
+        return classificator;
+    }
+
+    private static void createModule(String[] classes, String[] linesTrain, String[] linesTest, String featureMethod, String classificationMethod, String outputFile) {
         Sentence [] trainData = new Sentence[linesTrain.length];
         Sentence [] testData = new Sentence[linesTest.length];
 
@@ -49,29 +167,32 @@ public class Main {
             default:
                 System.out.println("Error: Invalid classification method parameter given, process stopped manually!!!");
                 System.exit(0);
-            }
+        }
 
         classificator.classify();
         printResults(testData);
-        printOutput(outputFile, testData);
-
-        // before calling input classifying method, set classifier to n_Bayes, because it is most accurate
-        N_Bayes nb = new N_Bayes(trainData, testData, vocabulary);
-        nb.classify();
-        classifyInput(nb);
+        printOutput(outputFile, trainData, featureMethod, classificationMethod, classes);
     }
 
-    private static void printOutput(String outputFile, Sentence[] testData) {
+    private static void printOutput(String outputFile, Sentence[] trainData, String featureMethod, String classificationMethod, String[] classes) {
         try{
             PrintWriter writer = new PrintWriter(outputFile);
-            for(int i = 0; i < testData.length; i++){
-                String line = testData[i].type;
-                for (int j = 0; j < testData[i].words.length; j++){
-                    line += " " + testData[i].words[j];
-                }
-                line += " " + testData[i].classifiedAs;
-                writer.println(line);
+            writer.println(featureMethod);
+            writer.println(classificationMethod);
+            writer.println(classes.length);
+            for(int i = 0; i < classes.length; i++){
+                writer.println(classes[i]);
             }
+            for(int i = 0; i < trainData.length; i++){
+                Sentence curr = trainData[i];
+                writer.print(curr.type + " ");
+                for(int j = 0; j < curr.words.length; j++){
+                    writer.print(curr.words[j] + " ");
+                }
+                writer.println();
+            }
+            System.out.println("Modul " + outputFile + " byl vytvořen.");
+            writer.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error loading output file: make sure it ends with .txt");
         }

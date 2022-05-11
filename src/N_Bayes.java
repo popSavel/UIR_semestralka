@@ -33,6 +33,8 @@ public class N_Bayes implements Classificator{
     }
 
     public String classifyInput(Sentence input) {
+        sortData(this.trainData);
+        train();
         double [] probabilities = new double[classes.length];
         for(int j = 0; j < probabilities.length; j++){
             probabilities[j] = classes[j].countProbability(input, vocabulary);
