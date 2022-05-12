@@ -10,6 +10,7 @@ public class Sentence {
 
     double [] vector;
 
+
     public Sentence(String line) {
         String [] sentence = line.split(" ");
         type = sentence[0];
@@ -19,9 +20,6 @@ public class Sentence {
         for(int i = 0; i < this.words.length; i++){
             words[i] = parts.get(i);
         }
-
-
-
     }
 
     private ArrayList<String> init(String[] sentence) {
@@ -49,6 +47,9 @@ public class Sentence {
         return result;
     }
 
+    /**
+     * ze slova word odstraní interpunkčí zmanénka na konci a na začátku
+     */
     private String strip(String word) {
         if(word.length() < 1){
             return word;
@@ -70,6 +71,9 @@ public class Sentence {
         return word;
     }
 
+    /**
+     * @return zda se v této větě vyskytuje slovo currWord
+     */
     public boolean contains(String currWord) {
         for(int i =0; i < this.words.length; i++){
             if(this.words[i].equals(currWord)){
@@ -79,6 +83,9 @@ public class Sentence {
         return false;
     }
 
+    /**
+     * @return zda je slovo word platné a dá se považovat za slovo
+     */
     public boolean isValid(String word){
         if(word.length() > 0 && (!word.equals("."))
                             && (!word.equals("-"))

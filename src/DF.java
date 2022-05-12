@@ -8,6 +8,10 @@ public class DF implements Feature{
         this.vocabulary = vocabulary;
     }
 
+    /**
+     * spočítá kolikrát se každý prvek ze slovníku vyskytuje v trénovacích datech
+     * @return výsledný vektor s dokumentovou frekvencí všech prvků slovníku
+     */
     private double[] countDf() {
         int totalWords = 0;
         double [] result = new double[this.vocabulary.length];
@@ -28,6 +32,9 @@ public class DF implements Feature{
         return result;
     }
 
+    /**
+     * @return index slova word ve slovníku
+     */
     private int vocabIndex(String word) {
         for (int i = 0; i < this.vocabulary.length; i++){
             if(this.vocabulary[i].equals(word)){

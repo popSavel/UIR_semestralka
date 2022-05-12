@@ -32,6 +32,12 @@ public class Main {
         }
     }
 
+    /**
+     * spuštění s jedním parametrem
+     * připraví klasifikátor a příznakový algoritmus
+     * zobrazí jednoduché gui, kam uživatel zadá text, klasifikátor ho zařadí a vypíše výsledek do gui
+     * @param modul název modulu
+     */
     private static void runModule(String modul) {
         String [] lines = readFile(modul);
         String featureType = lines[0];
@@ -75,6 +81,7 @@ public class Main {
         Label resultLabel = new Label("Výsledek: ");
         TextField resultField = new TextField();
         resultField.setColumns(15);
+        resultField.setEditable(false);
 
 
         Button klasifikace = new Button("Klasifikuj");
@@ -127,10 +134,12 @@ public class Main {
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setLocationRelativeTo(null);
         gui.setResizable(false);
-
         gui.setVisible(true);
     }
 
+    /**
+     * @return vytvoří klasifikátor typu classificatiomMethod
+     */
     private static Classificator createClassificator(String classificationMethod, Sentence[] data, String[] vocabulary) {
         Classificator classificator = null;
         if(classificationMethod.equals("bayes")){
@@ -141,6 +150,10 @@ public class Main {
         return classificator;
     }
 
+    /**
+     * spuštění se 6 parametry
+     * klasifikuje testovací data, vypíše přesnost do konzole a vytvoří modul
+     */
     private static void createModule(String[] classes, String[] linesTrain, String[] linesTest, String featureMethod, String classificationMethod, String outputFile) {
         Sentence [] trainData = new Sentence[linesTrain.length];
         Sentence [] testData = new Sentence[linesTest.length];
@@ -179,6 +192,9 @@ public class Main {
         printOutput(outputFile, trainData, featureMethod, classificationMethod, classes);
     }
 
+    /**
+     * vypíše do souboru s názvem outputFile všechna potřebná data pro spuštění s jedním parametrem
+     */
     private static void printOutput(String outputFile, Sentence[] trainData, String featureMethod, String classificationMethod, String[] classes) {
         try{
             PrintWriter writer = new PrintWriter(outputFile);
@@ -203,20 +219,9 @@ public class Main {
         }
     }
 
-    private static void classifyInput(N_Bayes nb) {
-        System.out.println("Zadejte větu ke klasifikaci: ");
-        Scanner sc = new Scanner(System.in);
-        while(sc.hasNextLine()){
-            String text = sc.nextLine();
-            if(!text.isBlank() && !text.isEmpty()){
-                Sentence input = new Sentence(text);
-                String result = nb.classifyInput(input);
-                System.out.println(result);
-            }
-        }
-    }
-
-
+    /**
+     * vytvoří příznakové vektory prvkům z pole data, algoritmem featureMethod
+     */
     private static void feature(String featureMethod, Sentence[] data, String[] vocabulary) {
         Feature feature = null;
 
@@ -239,6 +244,9 @@ public class Main {
         feature.feature();
     }
 
+    /**
+     * @return pole prvků typu ClassificationClass, prvek za každý typ z pole classes
+     */
     private static ClassificationClass[] createClasses(String[] classes, int length) {
         ClassificationClass [] result = new ClassificationClass[classes.length];
         for(int i = 0;  i < result.length; i++){
@@ -247,6 +255,10 @@ public class Main {
         return result;
     }
 
+    /**
+     * pro prvky z pole testData spočítá kolik z nich má stejný typ věty s typem klasifikační třídy do které byl zařazen
+     * úspěšnost vypíše v procentech
+     */
     private static void printResults(Sentence[] testData) {
         int correct = 0;
         for(int i = 0; i < testData.length; i++){
@@ -259,6 +271,9 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * @return seznam všech možných slov co se vyskytují v trénovacích datech
+     */
     public static String[] makeVocabulary(Sentence[] data){
         ArrayList<String> vocabulary = new ArrayList<String>();
         for(int i = 0; i < data.length; i++){
@@ -278,6 +293,9 @@ public class Main {
         return result;
     }
 
+    /**
+     * @return zda je prvek word v listu vocabulary
+     */
     public static boolean inVocabulary(ArrayList<String> vocabulary, String word) {
         for(int i = 0; i < vocabulary.size(); i++){
             if(vocabulary.get(i).equals(word)){
@@ -287,6 +305,9 @@ public class Main {
         return false;
     }
 
+    /**
+     * @return pole řádků souboru fileName
+     */
     private  static String[] readFile(String fileName) {
         Path path  = Path.of(fileName);
         ArrayList <String> lines = new ArrayList<String>();

@@ -16,6 +16,9 @@ public class N_Bayes implements Classificator{
         this.vocabulary = vocabulary;
     }
 
+    /**
+     * @return pole tříd do kterých patří prvky z testovacích dat
+     */
     public String[] classify() {
         sortData(this.trainData);
         train();
@@ -32,6 +35,9 @@ public class N_Bayes implements Classificator{
         return result;
     }
 
+    /**
+     * @return třída do které patří input
+     */
     public String classifyInput(Sentence input) {
         sortData(this.trainData);
         train();
@@ -43,6 +49,9 @@ public class N_Bayes implements Classificator{
         return classes[largest].name;
     }
 
+    /**
+     * @return největší prvek z pole probabilities
+     */
     private int largest(double[] probabilities) {
         int result = 0;
         double largest = 0;
@@ -55,6 +64,9 @@ public class N_Bayes implements Classificator{
         return result;
     }
 
+    /**
+     * spočítá pravděpodobnosti ve všech klasifikačních třídách
+     */
     private void train() {
         for(int i = 0; i < classes.length; i++){
             ClassificationClass curr = classes[i];
@@ -62,6 +74,9 @@ public class N_Bayes implements Classificator{
         }
     }
 
+    /**
+     * roztřídí prvky z pole trainData do klasifikačních tříd
+     */
     private void sortData(Sentence[] trainData) {
         ArrayList<ClassificationClass> classes = new ArrayList<ClassificationClass>();
         for(int i = 0; i < trainData.length; i++){
@@ -77,6 +92,9 @@ public class N_Bayes implements Classificator{
         }
     }
 
+    /**
+     * přidá prvek curr do listu classes
+     */
     private void addSentence(Sentence curr, ArrayList<ClassificationClass> classes) {
         for(int i = 0; i < classes.size(); i++){
             if(classes.get(i).name.equals(curr.type)){
@@ -85,6 +103,9 @@ public class N_Bayes implements Classificator{
         }
     }
 
+    /**
+     * @return zda v listu classes již existje prvek s typem stejným jako má prvek curr
+     */
     private boolean classExist(ArrayList<ClassificationClass> classes, Sentence curr) {
         if(classes.size() < 1){
             return false;

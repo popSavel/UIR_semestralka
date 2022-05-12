@@ -32,6 +32,10 @@ public class K_NN implements Classificator{
         return mostNeighbours(nearest);
     }
 
+    /**
+     * @param nearest pole k nejbližších sousedů
+     * @return klasifikační třída s největším zastoupením v poli nearest
+     */
     private String mostNeighbours(Sentence[] nearest) {
         ArrayList<ClassificationClass> classes = new ArrayList<ClassificationClass>();
         for(int i = 0; i < nearest.length; i++){
@@ -43,6 +47,9 @@ public class K_NN implements Classificator{
         return hasMost(classes);
     }
 
+    /**
+     * @return typ klasifikační třídy, která má nejvíce prvků
+     */
     private String hasMost(ArrayList<ClassificationClass> classes) {
         String result = "";
         int count = 0;
@@ -55,6 +62,9 @@ public class K_NN implements Classificator{
         return result;
     }
 
+    /**
+     * přidá souseda do klasifikační třídy
+     */
     private void addNeighbor(ArrayList<ClassificationClass> classes, Sentence sentence) {
         for(int i = 0; i < classes.size(); i++){
             if(classes.get(i).name.equals(sentence.type)){
@@ -63,6 +73,9 @@ public class K_NN implements Classificator{
         }
     }
 
+    /**
+     * @return zda v arraylistu classes existuje třída stejného typu jako je sentence
+     */
     private boolean contain(ArrayList<ClassificationClass> classes, Sentence sentence) {
         for(int i = 0; i < classes.size(); i++){
             if(classes.get(i).equals(sentence.type)){
@@ -72,6 +85,10 @@ public class K_NN implements Classificator{
         return false;
     }
 
+    /**
+     * @return pole k nejbližších sousedů prvku current
+     * prochází pole a aktuální prvek vždy porovnává s tím nejvzdálenějším z těch co jsou zatím nejbližší
+     */
     private Sentence[] findNearest(Sentence current) {
         Sentence [] result = new Sentence[this.K];
         int farthestIndex = 0;
@@ -88,6 +105,9 @@ public class K_NN implements Classificator{
         return result;
     }
 
+    /**
+     * @return prvek z pole train, který má největší euklidovskou vzdálenost od prvku current
+     */
     private int getFarthest(Sentence[] train, Sentence current) {
         int result = 0;
         Sentence farthest = train[0];
@@ -100,6 +120,9 @@ public class K_NN implements Classificator{
         return result;
     }
 
+    /**
+     * @return euklidovskoá vzdálenost first a second prvku
+     */
     private double getDistance(Sentence first, Sentence second) {
         double distance = 0;
         for(int i = 0; i < first.vector.length; i++){

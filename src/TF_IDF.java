@@ -12,6 +12,9 @@ public class TF_IDF implements Feature{
         this.vocabulary = vocabulary;
     }
 
+    /**
+     * @return idf prvků ze slovníku
+     */
     private double[] makeIdf() {
         double [] result = new double[this.vocabulary.length];
         for(int i = 0; i < vocabulary.length; i++){
@@ -27,6 +30,9 @@ public class TF_IDF implements Feature{
         return result;
     }
 
+    /**
+     * spočítá tf idf všem datům z pole sentences
+     */
     private void tf() {
         for(int i = 0; i < sentences.length; i++){
             Sentence curr = sentences[i];
@@ -41,6 +47,9 @@ public class TF_IDF implements Feature{
         }
     }
 
+    /**
+     * @return kolikrát se slovo word vyskytuje v poli words
+     */
     private int occurence(String[] words, String word) {
         int result = 0;
         for(int i = 0; i < words.length; i++){

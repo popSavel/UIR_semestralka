@@ -1,15 +1,20 @@
-import java.util.ArrayList;
-
 public class BagOfWords implements Feature{
 
+    //train data
     Sentence[] sentences;
 
     String [] vocabulary;
+
     public BagOfWords(Sentence[] trainData, String[] vocabulary) {
         this.sentences = trainData;
         this.vocabulary = vocabulary;
     }
 
+    /**
+     * ke každému prvku slovníku spočte počet výskytů ve větě senetence
+     * @param sentence prvek z trénovacích dat
+     * @return příznakový vektor
+     */
     public double[] makeVector(Sentence sentence) {
         double [] result = new double[vocabulary.length];
         for(int i = 0; i < vocabulary.length; i++){
@@ -19,6 +24,9 @@ public class BagOfWords implements Feature{
         return result;
     }
 
+    /**
+     * @return počet výskytů slova word ve větě sentence
+     */
     public int occurence(String word, Sentence sentence) {
         int result = 0;
         for(int i = 0; i < sentence.words.length; i++){

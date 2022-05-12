@@ -3,8 +3,9 @@ import java.util.ArrayList;
 public class ClassificationClass {
 
     String name;
-
     int trainDataSize;
+
+    //věty patřící do této klasifikační třídy
     ArrayList <Sentence> data;
 
     double [] probabilities;
@@ -19,6 +20,10 @@ public class ClassificationClass {
         data.add(sentence);
     }
 
+    /**
+     * do vektoru probabilities spočítá pravdděpodobnosti slov pro tuto klasifikační třídu
+     * @param vocabulary
+     */
     public void countProbabilities(String[] vocabulary) {
         this.probabilities = new double[vocabulary.length];
         double totalProb = 0;
@@ -36,6 +41,9 @@ public class ClassificationClass {
         }
     }
 
+    /**
+     * @return pravděpodobnost, že Sentence curr patří do této klasifikační třídy
+     */
     public double countProbability(Sentence curr, String[] vocabulary) {
         double result = data.size()/(double)trainDataSize;
 
